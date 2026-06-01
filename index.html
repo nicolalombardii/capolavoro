@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Erasmus a Madrid — Capolavoro</title>
+ 
+  <!-- Font: Syne (display bold) + Inter (corpo leggibile) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+ 
+  <style>
+    /* =============================================
+       VARIABILI CSS
+       ============================================= */
+    :root {
+      --bg:       #080C12;   /* blu notte profondo */
+      --bg2:      #0D1219;   /* card e sezioni */
+      --bg3:      #1A2233;   /* bordi e separatori */
+      --acc:      #00C9A7;   /* verde acqua — accent principale */
+      --acc2:     #5B9BF0;   /* azzurro — accent secondario */
+      --testo:    #E8EEF6;   /* testo principale */
+      --testo2:   #7A8BA0;   /* testo secondario / label */
+      --bianco:   #FFFFFF;
+ 
+      --font-display: 'Syne', sans-serif;
+      --font-corpo:   'Inter', sans-serif;
+ 
+      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+ 
+
+    
+    /* =============================================
+       RESET & BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    html { scroll-behavior: smooth; font-size: 16px; }
+ 
+    body {
+      font-family: var(--font-corpo);
+      background: var(--bg);
+      color: var(--testo);
+      overflow-x: hidden;
+    }
+ 
+    /* Cursore personalizzato */
+    body { cursor: none; }
+    #cursore {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--acc);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s var(--ease), width 0.3s, height 0.3s, opacity 0.3s;
+      mix-blend-mode: difference;
+    }
+    #cursore.grande { width: 40px; height: 40px; opacity: 0.4; }
+ 
+    /* =============================================
+       NAVBAR
+       ============================================= */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(13, 13, 13, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 201, 167, 0.1);
+      transition: border-color 0.4s;
+    }
+ 
+    nav.scrolled { border-color: rgba(0, 201, 167, 0.25); }
+ 
+    /* Logo */
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      color: var(--testo);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--acc); }
+ 
+    /* Link */
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--testo2);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--acc); }
+ 
+    /* Hamburger mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--testo); transition: 0.3s; }
+ 
+    /* =============================================
+       HERO
+       ============================================= */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      position: relative;
+      overflow: hidden;
+      gap: 4rem;
+    }
+ 
+    /* Cerchio sfumato di sfondo */
+    .hero-blob {
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,201,167,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+ 
+    /* Linee di griglia decorative */
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,201,167,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,201,167,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+ 
+    /* Colonna sinistra */
+    .hero-left { position: relative; z-index: 1; }
+ 
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: su 0.7s 0.2s var(--ease) forwards;
+    }
+    /* Linea prima del label */
+    .hero-label::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--acc);
+    }
+ 
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(3rem, 6vw, 6.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: su 0.9s 0.35s var(--ease) forwards;
+    }
+ 
+    /* Parola in arancio */
+    .hero h1 .acc { color: var(--acc); }
+ 
+    /* Parola con contorno (outline) */
+    .hero h1 .outline {
+      -webkit-text-stroke: 1.5px var(--testo);
+      color: transparent;
+    }
+ 
+    .hero-sub {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--testo2);
+      line-height: 1.75;
+      max-width: 400px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: su 0.8s 0.55s var(--ease) forwards;
+    }
+ 
+    /* Pulsante */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.85rem 1.8rem;
+      background: var(--acc);
+      color: var(--bianco);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.3s, transform 0.3s;
+      opacity: 0;
+      animation: su 0.8s 0.75s var(--ease) forwards;
+    }
+    .btn:hover { background: var(--acc2); transform: translateY(-3px); }
+    .btn .arrow { transition: transform 0.3s; }
+    .btn:hover .arrow { transform: translateX(4px); }
+ 
+    /* Colonna destra — grande numero decorativo */
+    .hero-right {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2rem;
+      opacity: 0;
+      animation: su 1s 0.5s var(--ease) forwards;
+    }
+ 
+    .hero-big-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(8rem, 16vw, 16rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      -webkit-text-stroke: 1px rgba(0,201,167,0.25);
+      color: transparent;
+      user-select: none;
+    }
+ 
+    .hero-tags {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .tag {
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--bg3);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      color: var(--testo2);
+      letter-spacing: 0.05em;
+    }
+    .tag.hot { border-color: var(--acc); color: var(--acc); }
+ 
+    /* Indicatore scroll */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--testo2);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--acc), transparent);
+      animation: scrollLine 2s infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+ 
+    /* =============================================
+       SEZIONI — struttura comune
+       ============================================= */
+    .sezione {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+ 
+    .sezione-full {
+      padding: 7rem 0;
+    }
+    .sezione-full .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 3rem;
+    }
+ 
+    /* Intestazione sezione */
+    .s-header {
+      margin-bottom: 4rem;
+    }
+    .s-num {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 0.8rem;
+    }
+    .s-header h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2rem, 4.5vw, 3.8rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .s-header h2 .dim { color: var(--testo2); }
+ 
+    /* Separatore orizzontale */
+    .sep {
+      border: none;
+      border-top: 1px solid var(--bg3);
+      margin: 0;
+    }
+ 
+    /* =============================================
+       REVEAL — animazione scroll
+       ============================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+ 
+    /* Ritardi a cascata per i figli */
+    .reveal-group > *:nth-child(1) { transition-delay: 0s; }
+    .reveal-group > *:nth-child(2) { transition-delay: 0.1s; }
+    .reveal-group > *:nth-child(3) { transition-delay: 0.2s; }
+    .reveal-group > *:nth-child(4) { transition-delay: 0.3s; }
+    .reveal-group > *:nth-child(5) { transition-delay: 0.4s; }
+    .reveal-group > *:nth-child(6) { transition-delay: 0.5s; }
+ 
+    /* =============================================
+       SEZ 1 — IL VIAGGIO (testo + grandi quote)
+       ============================================= */
+    .viaggio-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+ 
+    .viaggio-testo p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--testo2);
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+    }
+    .viaggio-testo p strong { color: var(--testo); font-weight: 500; }
+ 
+    /* Grande citazione laterale */
+    .viaggio-quote {
+      position: sticky;
+      top: 6rem;
+    }
+    .big-quote {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--testo);
+    }
+    .big-quote em { color: var(--acc); font-style: normal; }
+ 
+    .quote-bar {
+      width: 40px; height: 3px;
+      background: var(--acc);
+      margin: 1.5rem 0;
+    }
+ 
+    .quote-meta {
+      font-size: 0.8rem;
+      color: var(--testo2);
+      letter-spacing: 0.05em;
+    }
+ 
+    /* Numero grande decorativo */
+    .info-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 1.2rem;
+      border: 1px solid var(--bg3);
+      border-radius: 4px;
+      margin-top: 2rem;
+    }
+    .info-pill .pill-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--acc);
+      line-height: 1;
+    }
+    .info-pill .pill-label {
+      font-size: 0.78rem;
+      color: var(--testo2);
+      line-height: 1.4;
+    }
+ 
+    /* =============================================
+       SEZ 2 — LUOGHI (card orizzontali stacked)
+       ============================================= */
+    .luoghi-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1px; /* effetto bordo sottile tra le card */
+      background: var(--bg3);
+      border: 1px solid var(--bg3);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+ 
+    .luogo-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.6rem 2rem;
+      background: var(--bg2);
+      cursor: default;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .luogo-row::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 0;
+      background: linear-gradient(90deg, rgba(255,92,40,0.07), transparent);
+      transition: width 0.4s var(--ease);
+    }
+    .luogo-row:hover { background: #1e1e1e; }
+    .luogo-row:hover::before { width: 100%; }
+    .luogo-row:hover .luogo-emoji { transform: scale(1.25) rotate(-5deg); }
+    .luogo-row:hover .luogo-arrow { opacity: 1; transform: translateX(0); }
+ 
+    .luogo-emoji {
+      font-size: 2.2rem;
+      transition: transform 0.3s var(--ease);
+      text-align: center;
+    }
+    .luogo-info h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.25rem;
+    }
+    .luogo-info p {
+      font-size: 0.85rem;
+      color: var(--testo2);
+      line-height: 1.55;
+    }
+    .luogo-arrow {
+      font-size: 1.2rem;
+      color: var(--acc);
+      opacity: 0;
+      transform: translateX(-8px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+ 
+    /* =============================================
+       SEZ 3 — SCUOLA (sfondo diverso + griglia)
+       ============================================= */
+    .sfondo-alt { background: var(--bg2); }
+ 
+    .scuola-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+ 
+    .scuola-card {
+      padding: 2rem;
+      border: 1px solid var(--bg3);
+      border-radius: 6px;
+      background: var(--bg);
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .scuola-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--acc), var(--acc2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease);
+    }
+    .scuola-card:hover { border-color: rgba(255,92,40,0.3); transform: translateY(-4px); }
+    .scuola-card:hover::after { transform: scaleX(1); }
+ 
+    .scuola-card .s-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .scuola-card h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .scuola-card p {
+      font-size: 0.85rem;
+      color: var(--testo2);
+      line-height: 1.6;
+    }
+ 
+    /* =============================================
+       SEZ 4 — CRESCITA (layout asimmetrico)
+       ============================================= */
+    .crescita-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 5rem;
+      align-items: start;
+    }
+ 
+    .competenze-list { display: flex; flex-direction: column; gap: 0; }
+ 
+    .competenza {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid var(--bg3);
+      cursor: default;
+      transition: padding-left 0.3s var(--ease);
+    }
+    .competenza:first-child { border-top: 1px solid var(--bg3); }
+    .competenza:hover { padding-left: 0.8rem; }
+    .competenza:hover .comp-icon { color: var(--acc); }
+ 
+    .comp-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+      transition: color 0.3s;
+    }
+    .comp-testo h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+    .comp-testo p {
+      font-size: 0.83rem;
+      color: var(--testo2);
+      line-height: 1.6;
+    }
+ 
+    /* Colonna destra — testo riflessivo */
+    .crescita-testo blockquote {
+      border-left: 2px solid var(--acc);
+      padding-left: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .crescita-testo blockquote p {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+    .crescita-testo blockquote cite {
+      font-size: 0.75rem;
+      color: var(--acc);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .crescita-testo p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--testo2);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .crescita-testo p strong { color: var(--testo); font-weight: 500; }
+ 
+    /* =============================================
+       SEZ 5 — GALLERY (bento grid)
+       ============================================= */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 160px;
+      gap: 0.6rem;
+    }
+ 
+    .bento-cell {
+      border-radius: 6px;
+      background: var(--bg2);
+      border: 1px solid var(--bg3);
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 1.2rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: transform 0.3s var(--ease), border-color 0.3s;
+    }
+    .bento-cell:hover { transform: scale(0.98); border-color: rgba(255,92,40,0.35); }
+ 
+    .bento-cell:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .bento-cell:nth-child(3) { grid-column: span 2; }
+    .bento-cell:nth-child(6) { grid-column: span 2; }
+ 
+    /* Emoji decorativa in sfondo */
+    .bento-emoji {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4.5rem;
+      opacity: 0.18;
+      transition: opacity 0.3s, transform 0.3s;
+      user-select: none;
+    }
+    .bento-cell:hover .bento-emoji { opacity: 0.35; transform: translate(-50%,-50%) scale(1.15); }
+    .bento-cell:nth-child(1) .bento-emoji { font-size: 8rem; }
+ 
+    /* Testo in basso */
+    .bento-text { position: relative; z-index: 1; }
+    .bento-text h4 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.2rem;
+    }
+    .bento-text p {
+      font-size: 0.75rem;
+      color: var(--testo2);
+      line-height: 1.4;
+    }
+ 
+    /* Colori accent per ogni cella */
+    .bento-cell.b1 { background-image: url(io.jpg); background-size: cover; background-position: center;}
+    .bento-cell.b2 { background-image: url(tramonto.PNG); background-size: cover; background-position: center; }
+    .bento-cell.b3 { background-image: url(cena.PNG); background-size: cover; background-position: center; }
+    .bento-cell.b4 { background-image: url(metro.PNG); background-size: cover; background-position: center; }
+    .bento-cell.b5 { background-image: url(fc48031d-013c-4386-9897-56ac2577dda5.jpg); background-size: cover; background-position: center; }
+    .bento-cell.b6 { background-image: url(aula.PNG); background-size: cover; background-position: center; }
+    .bento-cell.b7 { background-image: url(28003b26-07ec-432f-849d-5ca73d7292e9.jpg); background-size: cover; background-position: center; }
+ 
+    /* =============================================
+       SEZ 6 — STATISTICHE + CHIUSURA
+       ============================================= */
+    .stats-band {
+      background: var(--acc);
+      padding: 4rem 3rem;
+    }
+    .stats-band .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+    .stat-n {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(3rem, 6vw, 5rem);
+      color: var(--bianco);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .stat-l {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-top: 0.4rem;
+    }
+ 
+    /* Chiusura */
+    .chiusura {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 7rem 3rem;
+    }
+    .chiusura .s-num { justify-content: center; display: flex; }
+    .chiusura h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+    .chiusura p {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--testo2);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+    .chiusura p strong { color: var(--testo); font-weight: 500; }
+ 
+    .firma {
+      margin-top: 3rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--testo2);
+    }
+    .firma .line { width: 40px; height: 1px; background: var(--bg3); }
+ 
+    /* =============================================
+       FOOTER
+       ============================================= */
+    footer {
+      border-top: 1px solid var(--bg3);
+      padding: 1.8rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer p { font-size: 0.78rem; color: var(--testo2); letter-spacing: 0.05em; }
+    footer span { color: var(--acc); }
+ 
+    /* =============================================
+       ANIMAZIONI
+       ============================================= */
+    @keyframes su {
+      to { opacity: 1; transform: translateY(0); }
+    }
+ 
+    /* =============================================
+       RESPONSIVE
+       ============================================= */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; gap: 2rem; }
+      .hero-right { align-items: flex-start; }
+      .hero-big-number { font-size: 8rem; }
+      .viaggio-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .viaggio-quote { position: static; }
+      .scuola-grid { grid-template-columns: 1fr 1fr; }
+      .crescita-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .bento { grid-template-columns: repeat(2, 1fr); }
+      .bento-cell:nth-child(1) { grid-column: span 2; }
+      .bento-cell:nth-child(3) { grid-column: span 1; }
+      .bento-cell:nth-child(6) { grid-column: span 1; }
+      .stats-band .inner { grid-template-columns: repeat(2, 1fr); }
+    }
+ 
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.5rem; }
+      .hamburger { display: flex; }
+      .nav-links {
+        position: fixed; top: 60px; left: 0; width: 100%;
+        flex-direction: column; gap: 0;
+        background: rgba(13,13,13,0.97);
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.4s;
+      }
+      .nav-links.open { max-height: 280px; }
+      .nav-links li { border-bottom: 1px solid var(--bg3); }
+      .nav-links a { display: block; padding: 0.9rem 1.5rem; }
+ 
+      .sezione { padding: 4rem 1.5rem; }
+      .sezione-full .inner { padding: 0 1.5rem; }
+      .luogo-row { grid-template-columns: 60px 1fr; padding: 1.2rem; }
+      .luogo-arrow { display: none; }
+      .scuola-grid { grid-template-columns: 1fr; }
+      .bento { grid-template-columns: 1fr 1fr; grid-auto-rows: 120px; }
+      .stats-band .inner { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+      body { cursor: auto; }
+      #cursore { display: none; }
+    }
+  </style>
+</head>
+<body>
+ 
+  <!-- Cursore personalizzato -->
+  <div id="cursore"></div>
+ 
+  <!-- ==========================================
+       NAVBAR
+       ========================================== -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">Madrid<span>.</span>Erasmus</a>
+ 
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+ 
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#viaggio"   onclick="chiudiMenu()">Viaggio</a></li>
+      <li><a href="#luoghi"    onclick="chiudiMenu()">Luoghi</a></li>
+      <li><a href="#guida"     onclick="chiudiMenu()">La Guida</a></li>
+      <li><a href="#crescita"  onclick="chiudiMenu()">Crescita</a></li>
+      <li><a href="#momenti"   onclick="chiudiMenu()">Momenti</a></li>
+      <li><a href="#chiusura"  onclick="chiudiMenu()">Fine</a></li>
+    </ul>
+  </nav>
+ 
+  <!-- ==========================================
+       HERO
+       ========================================== -->
+  <header class="hero">
+    <div class="hero-blob"></div>
+    <div class="hero-grid-lines"></div>
+ 
+    <!-- Sinistra: titolo e testo -->
+    <div class="hero-left">
+      <p class="hero-label">Capolavoro Scolastico · Erasmus+</p>
+      <h1>
+        Una settimana a<br>
+        <span class="acc">Madrid</span><br>
+        <span class="outline">da soli.</span>
+      </h1>
+      <p class="hero-sub">
+        Sette giorni lontano da casa, in una residenza universitaria,
+        con ragazzi di altre classi e una guida che ogni mattina
+        ci apriva le porte della città.
+      </p>
+      <a href="#viaggio" class="btn">
+        Leggi il racconto
+        <span class="arrow">→</span>
+      </a>
+    </div>
+ 
+    <!-- Destra: numero decorativo + tag -->
+    <div class="hero-right">
+      <div class="hero-big-number">07</div>
+      <div class="hero-tags">
+        <span class="tag hot">Erasmus+</span>
+        <span class="tag">Madrid 🇪🇸</span>
+        <span class="tag">A.S. 2025/26</span>
+        <span class="tag">Residenza Univ.</span>
+      </div>
+    </div>
+ 
+    <div class="scroll-indicator">
+      <span>Scorri</span>
+      <div class="scroll-line"></div>
+    </div>
+  </header>
+ 
+  <hr class="sep" />
+ 
+  <!-- ==========================================
+       SEZ 1 — IL VIAGGIO
+       ========================================== -->
+  <section class="sezione" id="viaggio">
+    <div class="s-header reveal">
+      <p class="s-num">01 — Il Viaggio</p>
+      <h2>Sette giorni,<br><span class="dim">una città intera.</span></h2>
+    </div>
+ 
+    <div class="viaggio-layout">
+      <!-- Testo -->
+      <div class="viaggio-testo reveal">
+        <p>
+          Il progetto <strong>Erasmus+</strong> mi ha portato a Madrid
+          per una settimana — non con la mia classe, ma con
+          <strong>ragazzi di altre classi</strong>, persone che conoscevo poco
+          o per niente. Un gruppo nuovo, da costruire da zero.
+        </p>
+        <p>
+          Niente famiglia ospitante: abbiamo alloggiato in una
+          <strong>residenza universitaria</strong> nel cuore di Madrid.
+          Camere condivise, spazi comuni, colazioni veloci prima
+          di uscire a scoprire la città. Una piccola vita autonoma,
+          tutta nostra.
+        </p>
+        <p>
+          Ogni mattina ci aspettava la nostra <strong>guida</strong>,
+          che ci accompagnava ovunque e ci raccontava Madrid
+          come solo chi la conosce davvero sa fare.
+          Non una visita turistica qualunque — una vera immersione.
+        </p>
+ 
+        <!-- Pillole info -->
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:2rem;">
+          <div class="info-pill">
+            <span class="pill-num">7</span>
+            <span class="pill-label">Giorni di<br>avventura</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-num">🏢</span>
+            <span class="pill-label">Residenza<br>universitaria</span>
+          </div>
+          <div class="info-pill">
+            <span class="pill-num">1</span>
+            <span class="pill-label">Guida che<br>non dimentico</span>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Citazione laterale sticky -->
+      <div class="viaggio-quote reveal">
+        <div class="big-quote">
+          "Per la prima<br>volta <em>davvero</em><br>lontano<br>da casa."
+        </div>
+        <div class="quote-bar"></div>
+        <p class="quote-meta">Il pensiero della prima sera in residenza</p>
+      </div>
+    </div>
+  </section>
+ 
+  <hr class="sep" />
+ 
+  <!-- ==========================================
+       SEZ 2 — LUOGHI
+       ========================================== -->
+  <section class="sezione" id="luoghi">
+    <div class="s-header reveal">
+      <p class="s-num">02 — Luoghi</p>
+      <h2>Posti che<br><span class="dim">restano addosso.</span></h2>
+    </div>
+ 
+    <div class="luoghi-stack reveal-group">
+      <!-- Ogni riga è un luogo visitato -->
+      <div class="luogo-row reveal">
+        <div class="luogo-emoji">🏛️</div>
+        <div class="luogo-info">
+          <h3>Museo del Prado</h3>
+          <p>Le opere di Velázquez e Goya viste dal vivo hanno un peso che nessuna fotografia trasmette. Mi sono fermato a lungo davanti a <em>Las Meninas</em>.</p>
+        </div>
+        <div class="luogo-arrow">→</div>
+      </div>
+ 
+      <div class="luogo-row reveal">
+        <div class="luogo-emoji">🌿</div>
+        <div class="luogo-info">
+          <h3>Parco del Retiro</h3>
+          <p>Un polmone verde nel cuore della città. Qui ho avuto le conversazioni più autentiche con i miei nuovi amici spagnoli, seduti sull'erba senza fretta.</p>
+        </div>
+        <div class="luogo-arrow">→</div>
+      </div>
+ 
+      <div class="luogo-row reveal">
+        <div class="luogo-emoji">🏟️</div>
+        <div class="luogo-info">
+          <h3>Puerta del Sol</h3>
+          <p>Il cuore pulsante di Madrid. A qualsiasi ora fosse sempre piena di vita. Il chilometro zero mi ha fatto riflettere sul concetto di punto di partenza.</p>
+        </div>
+        <div class="luogo-arrow">→</div>
+      </div>
+ 
+      <div class="luogo-row reveal">
+        <div class="luogo-emoji">🍷</div>
+        <div class="luogo-info">
+          <h3>Mercado de San Miguel</h3>
+          <p>Un'esplosione di sapori: tapas, jamón, churros. Il cibo come linguaggio universale — bastava indicare e sorridere per capirsi.</p>
+        </div>
+        <div class="luogo-arrow">→</div>
+      </div>
+ 
+      <div class="luogo-row reveal">
+        <div class="luogo-emoji">🏰</div>
+        <div class="luogo-info">
+          <h3>Palazzo Reale</h3>
+          <p>La grandiosità della monarchia spagnola impressiona. Curiosità storiche che si intrecciano con la storia europea che studiamo a scuola.</p>
+        </div>
+        <div class="luogo-arrow">→</div>
+      </div>
+ 
+      <div class="luogo-row reveal">
+        <div class="luogo-emoji">🏫</div>
+        <div class="luogo-info">
+          <h3>La Scuola Partner</h3>
+          <p>Forse il luogo più significativo. Entrare in un'aula straniera da ospite mi ha messo alla prova e reso più consapevole di me stesso.</p>
+        </div>
+        <div class="luogo-arrow">→</div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ==========================================
+       SEZ 3 — LA GUIDA
+       ========================================== -->
+  <div class="sezione-full sfondo-alt" id="guida">
+    <div class="inner">
+      <div class="s-header reveal">
+        <p class="s-num">03 — La Guida</p>
+        <h2>Ogni giorno<br><span class="dim">una nuova storia.</span></h2>
+      </div>
+ 
+      <div class="scuola-grid reveal-group">
+        <div class="scuola-card reveal">
+          <div class="s-icon">🗺️</div>
+          <h4>Ogni mattina, insieme</h4>
+          <p>La guida ci aspettava ogni giorno davanti alla residenza. Zaino in spalla, si partiva. Ogni uscita aveva un tema diverso: storia, arte, vita quotidiana madrilena.</p>
+        </div>
+        <div class="scuola-card reveal">
+          <div class="s-icon">🎙️</div>
+          <h4>Storie che i libri non raccontano</h4>
+          <p>Non spiegava solo date e monumenti. Ci raccontava aneddoti, curiosità, leggende locali. Madrid prendeva vita in modo completamente diverso.</p>
+        </div>
+        <div class="scuola-card reveal">
+          <div class="s-icon">🚶</div>
+          <h4>A piedi tra i quartieri</h4>
+          <p>Malasaña, La Latina, il centro storico: abbiamo camminato per ore, scoprendo angoli che da turista normale non avrei mai trovato.</p>
+        </div>
+        <div class="scuola-card reveal">
+          <div class="s-icon">❓</div>
+          <h4>Domande e risposte</h4>
+          <p>La guida incoraggiava le domande. Non c'era nulla di stupido da chiedere. Quel clima aperto ha reso ogni spiegazione molto più coinvolgente.</p>
+        </div>
+        <div class="scuola-card reveal">
+          <div class="s-icon">🍽️</div>
+          <h4>Cultura anche a tavola</h4>
+          <p>Ci ha portato nei posti giusti dove mangiare: non le trappole per turisti, ma i bar e i mercati dove mangia chi vive davvero a Madrid.</p>
+        </div>
+        <div class="scuola-card reveal">
+          <div class="s-icon">🌆</div>
+          <h4>Madrid vista dall'interno</h4>
+          <p>Grazie alla guida ho capito la differenza tra visitare una città e conoscerla. Tornato a casa, sentivo di avere un pezzo di Madrid con me.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- ==========================================
+       SEZ 4 — CRESCITA PERSONALE
+       ========================================== -->
+  <section class="sezione" id="crescita">
+    <div class="s-header reveal">
+      <p class="s-num">04 — Crescita Personale</p>
+      <h2>Cosa ho portato a casa<br><span class="dim">oltre i souvenir.</span></h2>
+    </div>
+ 
+    <div class="crescita-layout">
+      <!-- Lista competenze -->
+      <ul class="competenze-list reveal">
+        <li class="competenza">
+          <span class="comp-icon">🧭</span>
+          <div class="comp-testo">
+            <h4>Autonomia vera</h4>
+            <p>Niente genitori, niente insegnanti accanto. Solo io, una residenza e una città da esplorare. Ho gestito soldi, orari e decisioni da solo.</p>
+          </div>
+        </li>
+        <li class="competenza">
+          <span class="comp-icon">🤝</span>
+          <div class="comp-testo">
+            <h4>Nuove amicizie inaspettate</h4>
+            <p>I ragazzi delle altre classi erano sconosciuti il primo giorno. Dopo una settimana di residenza condivisa, erano persone con cui avevo vissuto qualcosa di unico.</p>
+          </div>
+        </li>
+        <li class="competenza">
+          <span class="comp-icon">🌐</span>
+          <div class="comp-testo">
+            <h4>Lo spagnolo sul campo</h4>
+            <p>Senza aula e senza voti, la lingua si impara diversamente. Ogni conversazione era reale, con una persona reale che aspettava una risposta vera.</p>
+          </div>
+        </li>
+        <li class="competenza">
+          <span class="comp-icon">🔄</span>
+          <div class="comp-testo">
+            <h4>Adattarsi a ritmi nuovi</h4>
+            <p>Madrid vive a orari diversi dall'Italia. Cene tardi, passeggiata serale, ritmo lento ma intenso. Ho imparato a stare in un tempo che non era il mio.</p>
+          </div>
+        </li>
+        <li class="competenza">
+          <span class="comp-icon">👁️</span>
+          <div class="comp-testo">
+            <h4>Imparare guardando</h4>
+            <p>Con la guida ho capito che osservare davvero una città richiede attenzione. Ho imparato a guardare i dettagli architettonici, le persone, i contrasti.</p>
+          </div>
+        </li>
+      </ul>
+ 
+      <!-- Testo riflessivo -->
+      <div class="crescita-testo reveal">
+        <blockquote>
+          <p>"Non ero con la mia classe. Ed è stato il punto."</p>
+          <cite>— Riflessione, ultimo giorno a Madrid</cite>
+        </blockquote>
+        <p>
+          Partire con persone che non conosci bene ti toglie la rete di sicurezza
+          del gruppo abituale. All'inizio sembra uno svantaggio.
+          Poi capisci che è il <strong>motore della crescita</strong>.
+        </p>
+        <p>
+          Vivere in residenza ha significato condividere spazi, orari, stanchezza
+          e risate con ragazzi diversi da me. Un'esperienza che nessuna gita
+          scolastica tradizionale avrebbe potuto darmi.
+        </p>
+        <p>
+          Tornato a casa, mi sono accorto di essere <strong>un po' più grande</strong>
+          di quando ero partito. Non in anni — in consapevolezza.
+        </p>
+      </div>
+    </div>
+  </section>
+ 
+  <hr class="sep" />
+ 
+  <!-- ==========================================
+       SEZ 5 — MOMENTI (bento gallery)
+       ========================================== -->
+  <section class="sezione" id="momenti">
+    <div class="s-header reveal">
+      <p class="s-num">05 — Momenti</p>
+      <h2>Istantanee<br><span class="dim">di quella settimana.</span></h2>
+    </div>
+ 
+    <div class="bento reveal-group">
+      <div class="bento-cell b1 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>Edificio Capitol</h4>
+          <p>un pallazzo che racconda un po di storia.</p>
+        </div>
+      </div>
+      <div class="bento-cell b2 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>Tramonto sul Palazzo Reale</h4>
+          <p>Madrid che si accende di arancio</p>
+        </div>
+      </div>
+      <div class="bento-cell b3 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>Cena in famiglia</h4>
+          <p>Paella e risate in due lingue</p>
+        </div>
+      </div>
+      <div class="bento-cell b4 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>Metro di Madrid</h4>
+          <p>Muoversi da soli in una città straniera</p>
+        </div>
+      </div>
+      <div class="bento-cell b5 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>Gara nel parco</h4>
+          <p>divertimento e cultura.</p>
+        </div>
+      </div>
+      <div class="bento-cell b6 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>In aula con i nuovi amici</h4>
+          <p>La lingua come ponte, non come muro</p>
+        </div>
+      </div>
+      <div class="bento-cell b7 reveal">
+        <div class="bento-emoji"></div>
+        <div class="bento-text">
+          <h4>Il volo di rientro</h4>
+          <p>Con qualcosa in più nel cuore e nella testa</p>
+        </div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ==========================================
+       BANDA STATISTICHE
+       ========================================== -->
+  <div class="stats-band">
+    <div class="inner">
+      <div class="stat-n" style="text-align:center">7</div>
+      <div><div class="stat-n">12+</div><div class="stat-l">Nuove amicizie</div></div>
+      <div><div class="stat-n">5</div><div class="stat-l">Siti visitati</div></div>
+      <div><div class="stat-n">∞</div><div class="stat-l">Ricordi</div></div>
+    </div>
+  </div>
+ 
+  <!-- ==========================================
+       SEZ 6 — RIFLESSIONE FINALE
+       ========================================== -->
+  <div class="chiusura reveal" id="chiusura">
+    <p class="s-num">06 — Riflessione Finale</p>
+    <h2>Un'esperienza<br>che <span style="color:var(--acc)">continua.</span></h2>
+    <p>
+      Quando sono tornato, qualcuno mi ha chiesto: <em>"Com'era Madrid?"</em>
+      E io non sapevo da dove iniziare. Non perché non avessi niente
+      da dire, ma perché avevo <strong>troppo</strong> da dire.
+    </p>
+    <p>
+      L'Erasmus mi ha dato qualcosa che non si studia sui libri:
+      la consapevolezza che il mondo è più grande di quello
+      che vedo dalla mia finestra, e che ho gli strumenti per esplorarlo.
+    </p>
+    <p>
+      Questo sito è il mio tentativo di raccontare quella settimana —
+      non solo i posti, ma <strong>quello che ho imparato su me stesso</strong>
+      stando lontano da casa.
+    </p>
+    <p>Se potessi tornare indietro, ripartirei domani mattina.</p>
+    <div class="firma">
+      <span class="line"></span>
+      GRACIAS POR TODO...
+      <span class="line"></span>
+    </div>
+  </div>
+ 
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer>
+    <p>Capolavoro Scolastico Personale · NICOLA LOMBARDI 4BI. Progetto <span>Erasmus+ Madrid</span></p>
+    <p style="color:var(--testo2)">A.S. 2025/26</p>
+  </footer>
+ 
+  <!-- ==========================================
+       JAVASCRIPT
+       ========================================== -->
+  <script>
+    /* -------------------------------------------
+       1. CURSORE PERSONALIZZATO
+    ------------------------------------------- */
+    const cursore = document.getElementById('cursore');
+ 
+    // Segue il mouse in tempo reale
+    document.addEventListener('mousemove', e => {
+      cursore.style.left = e.clientX + 'px';
+      cursore.style.top  = e.clientY + 'px';
+    });
+ 
+    // Diventa più grande su elementi interattivi
+    document.querySelectorAll('a, button, .luogo-row, .bento-cell, .scuola-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursore.classList.add('grande'));
+      el.addEventListener('mouseleave', () => cursore.classList.remove('grande'));
+    });
+ 
+    /* -------------------------------------------
+       2. NAVBAR — ombra allo scroll
+    ------------------------------------------- */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+ 
+    /* -------------------------------------------
+       3. HAMBURGER MENU — mobile
+    ------------------------------------------- */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+ 
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+ 
+    function chiudiMenu() {
+      navLinks.classList.remove('open');
+    }
+ 
+    /* -------------------------------------------
+       4. SCROLL REVEAL — elementi che appaiono
+          quando entrano nel viewport
+    ------------------------------------------- */
+    const elementiReveal = document.querySelectorAll('.reveal');
+ 
+    const osservatore = new IntersectionObserver(
+      (voci) => {
+        voci.forEach(voce => {
+          if (voce.isIntersecting) {
+            voce.target.classList.add('visible');
+            osservatore.unobserve(voce.target); // smetti di osservare
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -30px 0px' }
+    );
+ 
+    elementiReveal.forEach(el => osservatore.observe(el));
+ 
+    /* -------------------------------------------
+       5. STAT COUNTER — conta i numeri nelle stats
+    ------------------------------------------- */
+    // Seleziona la banda delle statistiche
+    const statsBand = document.querySelector('.stats-band');
+    let contato = false; // per animare una volta sola
+ 
+    const osservatoreStats = new IntersectionObserver(
+      (voci) => {
+        if (voci[0].isIntersecting && !contato) {
+          contato = true;
+          
+          const el = document.querySelectorAll('.stat-n')[1];
+          let v = 0;
+          const timer = setInterval(() => {
+            v++;
+            el.textContent = v + '+';
+            if (v >= 12) clearInterval(timer);
+          }, 80);
+        }
+      },
+      { threshold: 0.5 }
+    );
+ 
+    if (statsBand) osservatoreStats.observe(statsBand);
+  </script>
+ 
+</body>
+</html>
+ 
